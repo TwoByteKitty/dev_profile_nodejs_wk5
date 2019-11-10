@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const axios = require('axios');
 const fs = require("fs");
 
-inquirer.prompt([
+const inqQuestions = [
     {
         type: "input",
         name: "userName",
@@ -22,13 +22,31 @@ inquirer.prompt([
             "violaceous"
         ]
     }
-]).then(function (userInput) {
-    console.log(`username: ${userInput.userName}`);
-    console.log(`favorite color: ${userInput.favColor}`);
-    const githubProfileUrl = `https://api.github.com/users/${userInput.username}`;
+];
+
+function createMarkdown({data:githubProfileData}=response
+    ){
+    console.log(githubProfileData);
+    function returnMD(err){
+        if (err){
+            return console.log (err);
+        }
+        console.log("success!");
+    }
+    function formatMD(){
+        
+    }
+    fs.writeFile("profile.md", githubProfileData, returnMD)
+}
+
+function handleInput(userInput){
+
+    const githubProfileUrl = `https://api.github.com/users/${userInput.userName}`;
+    
     console.log(githubProfileUrl);
+
     axios.get(githubProfileUrl)
-    .then(function (response) {
-        console.log(response.data);
-    })
-})
+    .then(createMarkdown)
+}
+
+inquirer.prompt(inqQuestions).then(handleInput)
